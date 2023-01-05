@@ -3,19 +3,36 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@mate-academy/eslint-config-react-typescript": "^1.0.11",
+    "@mate-academy/students-ts-config": "*",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^27.5.2",
+    "@types/node": "^16.18.3",
+    "@types/react": "^18.0.25",
+    "@types/react-dom": "^18.0.9",
+    "axios": "^1.2.1",
+    "classnames": "^2.3.2",
+    "eslint-config-react-app": "^7.0.1",
+    "gh-pages": "^4.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-router-dom": "^6.4.4",
     "react-scripts": "5.0.1",
+    "react-slick": "^0.29.0",
+    "sass": "^1.56.1",
+    "slick-carousel": "^1.8.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint --ext .tsx,.ts --fix ./src -c .eslintrc.json"
   },
   "eslintConfig": {
     "extends": [
@@ -34,5 +51,18 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/react-slick": "^0.23.10",
+    "@typescript-eslint/eslint-plugin": "^5.46.0",
+    "@typescript-eslint/parser": "^5.46.0",
+    "eslint": "^8.29.0",
+    "eslint-config-standard-with-typescript": "^23.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-n": "^15.6.0",
+    "eslint-plugin-promise": "^6.1.1",
+    "eslint-plugin-react": "^7.31.11",
+    "sass": "^1.56.1",
+    "typescript": "^4.9.3"
   }
 }
