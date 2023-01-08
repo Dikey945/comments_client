@@ -1,7 +1,7 @@
 import { SingleComment } from "./SingleComment";
 
 export interface Post {
-  id: number,
+  id: string,
   title: string,
   body: string,
   comments: SingleComment[]
