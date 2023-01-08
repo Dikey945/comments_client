@@ -15,7 +15,7 @@ interface Props {
   children: React.ReactNode;
 }
 
-interface Group {
+export interface Group {
   [key: string]: SingleComment[];
 }
 
@@ -30,7 +30,7 @@ export const PostProvider: React.FC<Props> = ({ children }) => {
   const { loading, error, value: post } = useAsync(() => getPostById(id), [id])
   const typedPost = post as unknown as Post;
 
-  const commentsByParentId = useMemo(() => {
+  const commentsByParentId: Group = useMemo(() => {
     if (typedPost?.comments === null) {
       return {};
     }
@@ -43,13 +43,15 @@ export const PostProvider: React.FC<Props> = ({ children }) => {
     return group;
   }, [typedPost])
 
-  const getReplies = (parentId: string | null) => {
+
+  const getReplies: (parentId: string) => SingleComment[] = (parentId: string): SingleComment[] => {
     return commentsByParentId[String(parentId)];
   }
 
   return (
     <Context.Provider value={{
-      post: { ...(post as unknown as Post) },
+
+      post: { ...typedPost},
       getReplies,
       rootComments: commentsByParentId['null'],
     }}>

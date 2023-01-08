@@ -1,7 +1,7 @@
 import {User} from "./User";
 
 export interface SingleComment {
-  id: number,
+  id: string,
   user: User,
   message: string,
   postId: string,
