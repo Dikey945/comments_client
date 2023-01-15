@@ -1,6 +1,8 @@
-import { useCallback, useEffect, useState } from "react"
+import {SetStateAction, useCallback, useEffect, useState} from "react"
 
-export function useAsync(func, dependencies = []) {
+type Func = (...params: any) => Promise<SetStateAction<any>>
+
+export function useAsync(func: Func, dependencies:any[] = []) {
     const { execute, ...state } = useAsyncInternal(func, dependencies, true)
 
     useEffect(() => {
@@ -10,16 +12,16 @@ export function useAsync(func, dependencies = []) {
     return state
 }
 
-export function useAsyncFn(func, dependencies = []) {
+export function useAsyncFn(func: Func, dependencies = []) {
     return useAsyncInternal(func, dependencies, false)
 }
 
-function useAsyncInternal(func, dependencies, initialLoading = false) {
+function useAsyncInternal(func: Func, dependencies: any[], initialLoading = false) {
     const [loading, setLoading] = useState(initialLoading)
     const [error, setError] = useState()
     const [value, setValue] = useState()
 
-    const execute = useCallback((...params) => {
+    const execute = useCallback((...params: any) => {
         setLoading(true)
         return func(...params)
             .then(data => {

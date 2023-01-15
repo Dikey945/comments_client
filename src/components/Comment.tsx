@@ -5,6 +5,9 @@ import {FaEdit, FaHeart, FaReply, FaTrash} from "react-icons/fa";
 import { usePost } from "../contexts/PostContext";
 import classNames from "classnames";
 import {CommentsList} from "./CommentsList";
+import {CommentForm} from "./CommentForm";
+import {useAsyncFn} from "../hooks/useAsync";
+import {createComment} from "../services/comments";
 
 
 interface Props {
@@ -24,37 +27,63 @@ export const Comment: React.FC<Props> = ({ comment }) => {
     createdAt,
   } = comment;
 
-  const {getReplies, post} = usePost();
+  const {post, getReplies, createLocalComment} = usePost();
   // @ts-ignore
   const childComments: SingleComment[] | null = getReplies(id);
   const [areChildrenVisible, setAreChildrenVisible] = useState(false);
+  const [isReplying, setIsReplying] = useState(false);
+  const createCommentFn = useAsyncFn(createComment);
+  const onCommentReply = async (message: string): Promise<void | SingleComment> => {
+    const createdComment: Promise<SingleComment> = await createCommentFn.execute({
+      message,
+      postId: post?.id,
+      parentId: id })
+    setIsReplying(false);
+    createLocalComment(await createdComment);
+  }
 
   return (
     <>
-      <div className="comment">
-        <div className="comment__header">
-          <span className="comment__author"> {user.name} </span>
-          <span className="comment__date">
+      <div className="comment mt-1">
+        <div className="header">
+          <span className="name">{user.name}</span>
+          <span className="date">
           {dateFormatter.format(Date.parse(`${createdAt}`))}
         </span>
         </div>
 
-        <div className="comment__message">
+        <div className="message">
           {message}
         </div>
 
-        <div className="comment__footer">
+        <div className="footer">
           <IconBtn Icon={FaHeart} aria-label='Like'>
             2
           </IconBtn>
 
-          <IconBtn Icon={FaReply} aria-label='reply' />
+          <IconBtn
+            Icon={FaReply}
+            aria-label={isReplying ? 'Cancel reply' : 'Reply'}
+            onClick={() => setIsReplying(prev => !prev)}
+            isActive={isReplying}
+          />
 
           <IconBtn Icon={FaEdit} aria-label='Edit' />
 
           <IconBtn Icon={FaTrash} aria-label='Delete' color='danger'/>
         </div>
       </div>
+
+      {isReplying && (
+        <div className='mt-1 ml-3'>
+          <CommentForm
+            autoFocus
+            onSubmit={onCommentReply}
+            loading={createCommentFn.loading}
+            error={createCommentFn.error}
+          />
+        </div>
+      )}
 
       {childComments && childComments.length > 0 && (
         <>
