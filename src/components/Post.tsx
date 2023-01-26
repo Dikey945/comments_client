@@ -4,20 +4,19 @@ import {CommentsList} from "./CommentsList";
 import {CommentForm} from "./CommentForm";
 import {useAsyncFn} from "../hooks/useAsync";
 import {createComment} from "../services/comments";
+import {PostType} from "../types/Post";
+
 
 export const Post: React.FC = () => {
-  const { post, rootComments } = usePost();
+  const { post, rootComments, createLocalComment } = usePost();
   const {loading, error, execute: createCommentFn} = useAsyncFn(createComment);
 
-  const postId = post?.id;
-  console.log(postId);
-
-  const onCommentCreate = (message: string) => {
-    if (post && message) {
-      return createCommentFn({ message, postId})
-    }
-
+  const onCommentCreate = async (message: string): Promise<PostType | void> => {
+    return createCommentFn({ postId: post?.id, message }).then(
+      createLocalComment
+    )
   }
+
   return (
     <>
       <h1>{post?.title}</h1>
@@ -27,10 +26,10 @@ export const Post: React.FC = () => {
         <CommentForm
           loading={loading}
           error={error}
-          onSubmit={onCommentCreate}
+          onSubmit= {onCommentCreate}
         />
-        {rootComments !== null && rootComments.length > 0 && (
-          <div>
+        {rootComments && rootComments.length && (
+          <div className="mt-4">
             <CommentsList comments={rootComments} />
           </div>
         )}

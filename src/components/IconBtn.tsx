@@ -5,6 +5,7 @@ interface Props {
   isActive?: boolean;
   color?: string;
   children?: React.ReactNode;
+  onClick?: () => void;
 
 }
 

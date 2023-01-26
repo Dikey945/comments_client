@@ -1,26 +1,32 @@
 import React, {useState} from "react";
+import {PostType} from "../types/Post";
+import {SingleComment} from "../types/SingleComment";
 
 interface Props {
   loading: boolean;
-  error: string | undefined;
-  onSubmit: (message: string) => Promise<void>;
+  error: Error | null;
+  onSubmit: (message: string) => Promise<PostType | SingleComment | void>;
   initialValue?: string;
   autoFocus?: boolean;
 }
 
 export const CommentForm: React.FC<Props> = ({
   loading,
-  error,
   autoFocus = false,
   onSubmit,
   initialValue = "",
 }) => {
   const [message, setMessage] = useState(initialValue);
-  console.log(`Error: ${error}`);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    onSubmit(message).then(() => setMessage(""));
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    try {
+      e.preventDefault();
+      await onSubmit(message);
+      setMessage("");
+    } catch (err) {
+      console.log(err);
+      throw new Error('Error: Missing data');
+    }
   }
 
   return (
@@ -40,7 +46,6 @@ export const CommentForm: React.FC<Props> = ({
           {loading ? "Loading..." : "Post"}
         </button>
       </div>
-      <div className='error-msg'>{error}</div>
     </form>
   )
 }

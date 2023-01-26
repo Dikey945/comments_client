@@ -5,7 +5,7 @@ export interface SingleComment {
   user: User,
   message: string,
   postId: string,
-  parentId: string,
+  parentId: string | null,
   createdAt: Date,
-  children: SingleComment[],
+  children: SingleComment[] | null,
 }
