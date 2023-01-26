@@ -31,3 +31,10 @@ export const updateComment = async ({ message, postId, id}: createOptions) => {
     }
   })
 }
+
+export const deleteComment = ({ postId, id }: createOptions)  => {
+  return makeRequests(`posts/${postId}/comment/${id}`, {
+    method: "DELETE",
+  })
+}
+

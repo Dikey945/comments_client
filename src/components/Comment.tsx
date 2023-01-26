@@ -7,7 +7,7 @@ import classNames from "classnames";
 import {CommentsList} from "./CommentsList";
 import {CommentForm} from "./CommentForm";
 import {useAsyncFn} from "../hooks/useAsync";
-import {createComment} from "../services/comments";
+import {createComment, deleteComment, updateComment} from "../services/comments";
 
 
 interface Props {
@@ -27,19 +27,45 @@ export const Comment: React.FC<Props> = ({ comment }) => {
     createdAt,
   } = comment;
 
-  const {post, getReplies, createLocalComment} = usePost();
-  // @ts-ignore
+  const {
+    post,
+    getReplies,
+    createLocalComment,
+    updateLocalComment,
+    deleteLocalComment,
+  } = usePost();
   const childComments: SingleComment[] | null = getReplies(id);
   const [areChildrenVisible, setAreChildrenVisible] = useState(false);
   const [isReplying, setIsReplying] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const createCommentFn = useAsyncFn(createComment);
-  const onCommentReply = async (message: string): Promise<void | SingleComment> => {
-    const createdComment: Promise<SingleComment> = await createCommentFn.execute({
+  const updateCommentFn = useAsyncFn(updateComment);
+  const deleteCommentFn = useAsyncFn(deleteComment);
+  const onCommentReply = async (message: string) => {
+    const createdComment: SingleComment = await createCommentFn.execute({
       message,
       postId: post?.id,
       parentId: id })
     setIsReplying(false);
     createLocalComment(await createdComment);
+  }
+
+  const onCommentUpdate = async (message: string) => {
+    const updatedComment: SingleComment = await updateCommentFn.execute({
+      message,
+      postId: post?.id,
+      id })
+    setIsEditing(false);
+    updateLocalComment(id, message);
+    return updatedComment;
+  }
+
+  const onCommentDelete = async () => {
+    const deletedComment: SingleComment = await deleteCommentFn.execute({
+      postId: post?.id,
+      id })
+    deleteLocalComment(id);
+    return deletedComment;
   }
 
   return (
@@ -51,10 +77,18 @@ export const Comment: React.FC<Props> = ({ comment }) => {
           {dateFormatter.format(Date.parse(`${createdAt}`))}
         </span>
         </div>
-
-        <div className="message">
-          {message}
-        </div>
+        {isEditing
+          ? <CommentForm
+              autoFocus
+              initialValue={message}
+              onSubmit={onCommentUpdate}
+              loading={updateCommentFn.loading}
+              error={updateCommentFn.error}
+          />
+          : <div className="message">
+              {message}
+            </div>
+        }
 
         <div className="footer">
           <IconBtn Icon={FaHeart} aria-label='Like'>
@@ -68,9 +102,19 @@ export const Comment: React.FC<Props> = ({ comment }) => {
             isActive={isReplying}
           />
 
-          <IconBtn Icon={FaEdit} aria-label='Edit' />
+          <IconBtn
+            Icon={FaEdit}
+            aria-label={isEditing ? 'Cancel edit' : 'edit'}
+            onClick={() => setIsEditing(prev => !prev)}
+            isActive={isEditing}
+          />
 
-          <IconBtn Icon={FaTrash} aria-label='Delete' color='danger'/>
+          <IconBtn
+            Icon={FaTrash}
+            aria-label='Delete'
+            color='danger'
+            onClick={onCommentDelete}
+          />
         </div>
       </div>
 

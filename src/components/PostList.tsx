@@ -12,7 +12,7 @@ export const PostList: React.FC = () => {
     return <h1>Loading</h1>
   }
   if (error) {
-    return <h1 className="error-msg">{error}</h1>
+    return <h1 className="error-msg">{`${error}`}</h1>
   }
 
 
@@ -20,7 +20,7 @@ export const PostList: React.FC = () => {
     return (
       <>
         {
-          typedPosts.map((post: PostType)=> {
+          posts?.map((post: PostType)=> {
             return (
               <h1 key={post.id}>
                 <Link to={`/posts/${post.id}`}>{post.title}</Link>

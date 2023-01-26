@@ -4,7 +4,7 @@ import {SingleComment} from "../types/SingleComment";
 
 interface Props {
   loading: boolean;
-  error: string | undefined;
+  error: Error | null;
   onSubmit: (message: string) => Promise<PostType | SingleComment | void>;
   initialValue?: string;
   autoFocus?: boolean;
@@ -12,7 +12,6 @@ interface Props {
 
 export const CommentForm: React.FC<Props> = ({
   loading,
-  error,
   autoFocus = false,
   onSubmit,
   initialValue = "",
@@ -47,7 +46,6 @@ export const CommentForm: React.FC<Props> = ({
           {loading ? "Loading..." : "Post"}
         </button>
       </div>
-      <div className='error-msg'>{error}</div>
     </form>
   )
 }
