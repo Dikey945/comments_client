@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
     "jsx": "react",
-    "suppressImplicitAnyIndexErrors": true
+    "suppressImplicitAnyIndexErrors": true,
+    "noImplicitReturns": false,
   },
   "extends": "@mate-academy/students-ts-config",
   "include": [

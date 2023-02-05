@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { useAsync } from "../hooks/useAsync";
 
 export const PostList: React.FC = () => {
+
   const { loading, error, value: posts} = useAsync(getPosts)
   const typedPosts = posts as unknown as PostType[];
 

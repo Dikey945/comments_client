@@ -27,11 +27,11 @@ interface asyncParams {
   error: any;
   value: PostType | undefined;
 }
-const Context = React.createContext({} as PostContextType)
+const PostContext = React.createContext({} as PostContextType)
 
 export const usePost = () => {
 
-  return useContext(Context);
+  return useContext(PostContext);
 }
 
 export const PostProvider: React.FC<Props> = ({ children }) => {
@@ -45,7 +45,7 @@ export const PostProvider: React.FC<Props> = ({ children }) => {
   useEffect(() => {
     if (!post || post.comments == null) return
     setComments(post.comments)
-  }, [post])
+  }, [post, id])
 
 
 
@@ -95,8 +95,7 @@ export const PostProvider: React.FC<Props> = ({ children }) => {
   }
 
   return (
-    <Context.Provider value={{
-
+    <PostContext.Provider value={{
       post: { ...typedPost},
       getReplies,
       createLocalComment,
@@ -105,6 +104,6 @@ export const PostProvider: React.FC<Props> = ({ children }) => {
       rootComments: commentsByParentId["null"],
     }}>
       {loading ? <h1>Loading</h1> : error ? <h1 className="error-msg">{error}</h1> : children}
-    </Context.Provider>
+    </PostContext.Provider>
   )
 };

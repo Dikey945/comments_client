@@ -5,14 +5,16 @@ import {CommentForm} from "./CommentForm";
 import {useAsyncFn} from "../hooks/useAsync";
 import {createComment} from "../services/comments";
 import {PostType} from "../types/Post";
+import {useAuth} from "../contexts/AuthContext";
 
 
 export const Post: React.FC = () => {
   const { post, rootComments, createLocalComment } = usePost();
+  const { user } = useAuth();
   const {loading, error, execute: createCommentFn} = useAsyncFn(createComment);
 
   const onCommentCreate = async (message: string): Promise<PostType | void> => {
-    return createCommentFn({ postId: post?.id, message }).then(
+    return createCommentFn({ postId: post?.id, message, userId: user?.id }).then(
       createLocalComment
     )
   }

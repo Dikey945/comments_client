@@ -24,7 +24,6 @@ export const CommentForm: React.FC<Props> = ({
       await onSubmit(message);
       setMessage("");
     } catch (err) {
-      console.log(err);
       throw new Error('Error: Missing data');
     }
   }
