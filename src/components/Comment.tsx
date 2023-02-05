@@ -8,6 +8,7 @@ import {CommentsList} from "./CommentsList";
 import {CommentForm} from "./CommentForm";
 import {useAsyncFn} from "../hooks/useAsync";
 import {createComment, deleteComment, updateComment} from "../services/comments";
+import {useAuth} from "../contexts/AuthContext";
 
 
 interface Props {
@@ -20,6 +21,7 @@ const dateFormatter = new Intl.DateTimeFormat(undefined, {
 })
 
 export const Comment: React.FC<Props> = ({ comment }) => {
+  const { user: authUser} = useAuth();
   const {
     id,
     message,
@@ -45,7 +47,8 @@ export const Comment: React.FC<Props> = ({ comment }) => {
     const createdComment: SingleComment = await createCommentFn.execute({
       message,
       postId: post?.id,
-      parentId: id })
+      parentId: id,
+      userId: authUser?.id,})
     setIsReplying(false);
     createLocalComment(await createdComment);
   }
@@ -54,7 +57,8 @@ export const Comment: React.FC<Props> = ({ comment }) => {
     const updatedComment: SingleComment = await updateCommentFn.execute({
       message,
       postId: post?.id,
-      id })
+      id,
+      userId: authUser?.id, })
     setIsEditing(false);
     updateLocalComment(id, message);
     return updatedComment;
@@ -90,7 +94,7 @@ export const Comment: React.FC<Props> = ({ comment }) => {
             </div>
         }
 
-        <div className="footer">
+        <div className="comment__footer">
           <IconBtn Icon={FaHeart} aria-label='Like'>
             2
           </IconBtn>

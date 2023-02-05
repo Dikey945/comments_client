@@ -2,9 +2,14 @@ import axios from "axios";
 
 const REACT_APP_SERVER_URL = 'http://localhost:5050'
 
-const api = axios.create({
-  baseURL: REACT_APP_SERVER_URL
-})
+export function createClient () {
+  return axios.create({
+    baseURL: REACT_APP_SERVER_URL,
+    withCredentials: true
+  })
+}
+
+export const api = createClient()
 
 
 export const makeRequests = (url: string, option: any) => {
